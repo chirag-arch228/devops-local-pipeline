@@ -21,7 +21,7 @@ jobs:
           kubectl cluster-info
           kubectl get nodes
 
-      - name: Deploy App & Observability Stack
+      - name: Deploy App, Observability & Alerts
         run: |
           kubectl create namespace observability --dry-run=client -o yaml | kubectl apply -f -
           kubectl create namespace devops-prod --dry-run=client -o yaml | kubectl apply -f -
@@ -29,3 +29,4 @@ jobs:
           kubectl apply -f dashboard-config.yaml
           kubectl apply -f dashboard-provider.yaml
           kubectl apply -f grafana.yaml
+          kubectl apply -f prometheus-alerts.yaml
