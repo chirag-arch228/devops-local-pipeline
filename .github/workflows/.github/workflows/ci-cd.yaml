@@ -21,10 +21,11 @@ jobs:
           kubectl cluster-info
           kubectl get nodes
 
-      - name: Deploy Observability & App
+      - name: Deploy App & Observability Stack
         run: |
           kubectl create namespace observability --dry-run=client -o yaml | kubectl apply -f -
           kubectl create namespace devops-prod --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply -f app-deployment.yaml
           kubectl apply -f dashboard-config.yaml
           kubectl apply -f dashboard-provider.yaml
           kubectl apply -f grafana.yaml
