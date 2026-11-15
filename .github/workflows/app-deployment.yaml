@@ -16,14 +16,16 @@ spec:
       containers:
         - name: python-app
           image: python:3.9-slim
-          command: ["python", "-c"]
+          command: ["bash", "-c"]
           args:
             - |
+              pip install --no-cache-dir prometheus_client > /dev/null 2>&1
+              python -c '
               from http.server import HTTPServer, BaseHTTPRequestHandler
               import prometheus_client
               import time
               
-              REQUEST_COUNT = prometheus_client.Counter('http_requests_total', 'Total HTTP Requests')
+              REQUEST_COUNT = prometheus_client.Counter("http_requests_total", "Total HTTP Requests")
               
               class Handler(BaseHTTPRequestHandler):
                   def do_GET(self):
@@ -32,11 +34,13 @@ spec:
                       self.end_headers()
                       self.wfile.write(b"Hello from FinacPlus DevOps Portfolio App!")
                       
-              prometheus_client.start_http_server(80)
-              server = HTTPServer(('0.0.0.0', 8080), Handler)
+              prometheus_client.start_http_server(8000)
+              server = HTTPServer(("0.0.0.0", 8080), Handler)
               server.serve_forever()
+              '
           ports:
             - containerPort: 8080
+            - containerPort: 8000
 ---
 apiVersion: v1
 kind: Service
